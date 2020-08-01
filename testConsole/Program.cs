@@ -27,6 +27,7 @@ namespace testConsole
 
             var parking = new Parking();
             parking.onAddCompleted += () => Console.WriteLine("Parking added a car...");
+            Console.WriteLine("Testing GitHub integrated capabilities");
             Parking.TestingMethod((i) => Console.WriteLine(i*i));
             foreach (var car in cars)
             {
