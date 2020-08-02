@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,15 +8,24 @@ using System.Threading.Tasks;
 namespace testConsole
 {
     [Serializable]
-    class Base
+    [DataContract]
+    public class Base
     {
-        private int Magic;
+
+        [DataMember]
         public string Name { get; set; }
+
+        [DataMember]
         public int Age { get; set; }
         /// <summary>
         /// Contains information about time it took to finish work.
         /// </summary>
         public event EventHandler<OnWorkDoneEventArgs> OnFinishedWork;
+        public Base()
+        {
+            Name = default;
+            Age = default;
+        }
         public Base(string name,int age)
         {
             Name = name;
@@ -25,10 +35,6 @@ namespace testConsole
         {
             Name = name;
             Age = default;
-        }
-        public void SetSecret(int i)
-        {
-            Magic = i;
         }
         /// <summary>
         /// This method simulates work async.
@@ -59,7 +65,7 @@ namespace testConsole
         }
         public override string ToString()
         {
-            return $"{Name} Secret number: {Magic}";
+            return $"{Name} Age: {Age}";
         }
     }
 }

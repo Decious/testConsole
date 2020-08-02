@@ -5,8 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace testConsole
 {
@@ -64,26 +67,74 @@ namespace testConsole
             #endregion
             #region SerializationLesson
             List<Base> baselist = new List<Base>();
-            List<Base> resultinglist;
-            var Baza1 = new Base("First Base");
-            Baza1.SetSecret(1);
-            var Baza2 = new Base("Second Base");
-            Baza2.SetSecret(420);
-            baselist.Add(Baza1);
-            baselist.Add(Baza2);
-            var formatter = new BinaryFormatter();
-            using(var file = new FileStream("test.bin", FileMode.OpenOrCreate))
+            Random rnd = new Random();
+            for (int i = 0; i < 10; i++)
             {
-                formatter.Serialize(file,baselist);
+                baselist.Add(new Base($"Студент{i}",i+rnd.Next(1,40)));
+            }
+
+            //Binary
+            Console.WriteLine("\n--BINARY--\n");
+            var binformatter = new BinaryFormatter();
+            using(var file = new FileStream("test.bin", FileMode.Create))
+            {
+                binformatter.Serialize(file,baselist);
             }
             using (var file = new FileStream("test.bin", FileMode.OpenOrCreate))
             {
-                resultinglist = formatter.Deserialize(file) as List<Base>;
+                var resultinglist = binformatter.Deserialize(file) as List<Base>;
+                foreach (var item in resultinglist)
+                {
+                    Console.WriteLine(item);
+                }
             }
-            foreach(var item in resultinglist)
+            //SOAP
+            Console.WriteLine("\n--SOAP--\n");
+            var soapFormatter = new SoapFormatter();
+            using (var file = new FileStream("test.soap", FileMode.Create))
             {
-                Console.WriteLine(item);
+                soapFormatter.Serialize(file, baselist);
             }
+            using (var file = new FileStream("test.soap", FileMode.OpenOrCreate))
+            {
+                var resultinglist = soapFormatter.Deserialize(file) as List<Base>;
+                foreach (var item in resultinglist)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+            //XML
+            Console.WriteLine("\n--XML--\n");
+            var xmlformatter = new XmlSerializer(typeof(List<Base>));
+            using (var file = new FileStream("test.xml", FileMode.Create))
+            {
+                xmlformatter.Serialize(file, baselist);
+            }
+            using (var file = new FileStream("test.xml", FileMode.OpenOrCreate))
+            {
+                var resultinglist = xmlformatter.Deserialize(file) as List<Base>;
+                foreach (var item in resultinglist)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            //JSON
+            Console.WriteLine("\n--JSON--\n");
+            var jsonFormatter = new DataContractJsonSerializer(typeof(List<Base>));
+            using (var file = new FileStream("test.json", FileMode.Create))
+            {
+                jsonFormatter.WriteObject(file, baselist);
+            }
+            using (var file = new FileStream("test.json", FileMode.OpenOrCreate))
+            {
+                var resultinglist = jsonFormatter.ReadObject(file) as List<Base>;
+                foreach (var item in resultinglist)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
             #endregion
             Console.ReadLine();
         }
