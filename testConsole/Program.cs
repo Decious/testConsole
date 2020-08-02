@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,25 +20,46 @@ namespace testConsole
             //baseC.Work();
             //Console.ReadLine();
             #endregion
-            var cars = new List<Car>()
-            {
-                new Car() {Name = "ford", Number = "a001aa01"},
-                new Car() {Name = "lada", Number = "b727et77"}
-            };
+            #region Parking_Cars
+            //var cars = new List<Car>()
+            //{
+            //    new Car() {Name = "ford", Number = "a001aa01"},
+            //    new Car() {Name = "lada", Number = "b727et77"}
+            //};
 
-            var parking = new Parking();
-            parking.onAddCompleted += () => Console.WriteLine("Parking added a car...");
-            Console.WriteLine("Testing GitHub integrated capabilities");
-            Parking.TestingMethod((i) => Console.WriteLine(i*i));
-            foreach (var car in cars)
+            //var parking = new Parking();
+            //parking.onAddCompleted += () => Console.WriteLine("Parking added a car...");
+            //Console.WriteLine("Testing GitHub integrated capabilities");
+            //Parking.TestingMethod((i) => Console.WriteLine(i*i));
+            //foreach (var car in cars)
+            //{
+            //    parking.Add(car);
+            //}
+
+            //foreach (var item in parking.GetNumbers(10))
+            //{
+            //    Console.WriteLine(item);
+            //}
+            #endregion
+            Animal animal = new Animal();
+            NPC npc = new NPC();
+            Player player = new Player();
+            player.Health = 100;
+            List<IEntity> entities = new List<IEntity>();
+            entities.Add(animal);
+            entities.Add(npc);
+            entities.Add(player);
+            foreach(IEntity entity in entities)
             {
-                parking.Add(car);
+                if(entity.GetType().GetCustomAttributes().Any(x=> x.GetType() == typeof(PlayableAttribute)))
+                {
+                    Console.WriteLine($"Entity {entity}");
+                } else
+                {
+                    Console.WriteLine($"[NPC] {entity}");
+                }
             }
 
-            foreach (var item in parking.GetNumbers(10))
-            {
-                Console.WriteLine(item);
-            }
             Console.ReadLine();
         }
 
