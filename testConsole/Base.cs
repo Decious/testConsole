@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace testConsole
 {
-    class Base<T>
+    [Serializable]
+    class Base
     {
+        private int Magic;
         public string Name { get; set; }
-        public T Age { get; set; }
+        public int Age { get; set; }
         /// <summary>
         /// Contains information about time it took to finish work.
         /// </summary>
         public event EventHandler<OnWorkDoneEventArgs> OnFinishedWork;
-        public Base(string name,T age)
+        public Base(string name,int age)
         {
             Name = name;
             Age = age;
@@ -23,6 +25,10 @@ namespace testConsole
         {
             Name = name;
             Age = default;
+        }
+        public void SetSecret(int i)
+        {
+            Magic = i;
         }
         /// <summary>
         /// This method simulates work async.
@@ -50,6 +56,10 @@ namespace testConsole
             OnWorkDoneEventArgs args = new OnWorkDoneEventArgs();
             args.Time = (int)state;
             OnFinishedWork?.Invoke(this, args);
+        }
+        public override string ToString()
+        {
+            return $"{Name} Secret number: {Magic}";
         }
     }
 }

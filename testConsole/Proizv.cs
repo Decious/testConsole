@@ -4,14 +4,14 @@ using System.Text;
 
 namespace testConsole
 {
-    class Proizv<T> : Base<T>
+    class Proizv : Base
     {
-        public T ProizvNumber { get; set; }
-        public Proizv(string name, T age,T proizvNumber) : base(name,age)
+        public int ProizvNumber { get; set; }
+        public Proizv(string name, int age, int proizvNumber) : base(name,age)
         {
             ProizvNumber = proizvNumber;
         }
-        public Proizv(string name,T proizvNumber) : base(name)
+        public Proizv(string name, int proizvNumber) : base(name)
         {
             ProizvNumber = proizvNumber;
         }

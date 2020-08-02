@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,25 +42,49 @@ namespace testConsole
             //    Console.WriteLine(item);
             //}
             #endregion
-            Animal animal = new Animal();
-            NPC npc = new NPC();
-            Player player = new Player();
-            player.Health = 100;
-            List<IEntity> entities = new List<IEntity>();
-            entities.Add(animal);
-            entities.Add(npc);
-            entities.Add(player);
-            foreach(IEntity entity in entities)
+            #region attributes_lesson
+            //Animal animal = new Animal();
+            //NPC npc = new NPC();
+            //Player player = new Player();
+            //player.Health = 100;
+            //List<IEntity> entities = new List<IEntity>();
+            //entities.Add(animal);
+            //entities.Add(npc);
+            //entities.Add(player);
+            //foreach(IEntity entity in entities)
+            //{
+            //    if(entity.GetType().GetCustomAttributes().Any(x=> x.GetType() == typeof(PlayableAttribute)))
+            //    {
+            //        Console.WriteLine($"Entity {entity}");
+            //    } else
+            //    {
+            //        Console.WriteLine($"[NPC] {entity}");
+            //    }
+            //}
+            #endregion
+            #region SerializationLesson
+            List<Base> baselist = new List<Base>();
+            List<Base> resultinglist;
+            var Baza1 = new Base("First Base");
+            Baza1.SetSecret(1);
+            var Baza2 = new Base("Second Base");
+            Baza2.SetSecret(420);
+            baselist.Add(Baza1);
+            baselist.Add(Baza2);
+            var formatter = new BinaryFormatter();
+            using(var file = new FileStream("test.bin", FileMode.OpenOrCreate))
             {
-                if(entity.GetType().GetCustomAttributes().Any(x=> x.GetType() == typeof(PlayableAttribute)))
-                {
-                    Console.WriteLine($"Entity {entity}");
-                } else
-                {
-                    Console.WriteLine($"[NPC] {entity}");
-                }
+                formatter.Serialize(file,baselist);
             }
-
+            using (var file = new FileStream("test.bin", FileMode.OpenOrCreate))
+            {
+                resultinglist = formatter.Deserialize(file) as List<Base>;
+            }
+            foreach(var item in resultinglist)
+            {
+                Console.WriteLine(item);
+            }
+            #endregion
             Console.ReadLine();
         }
 
